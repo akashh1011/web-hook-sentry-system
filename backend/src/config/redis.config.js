@@ -1,10 +1,16 @@
-import Redis from 'ioredis'
-import {ENV} from "./env.config.js"
+import {createClient} from 'redis'
+import {ENV} from './env.config.js'
 
+const redisClient = createClient({
+  url: ENV.REDIS_URL
+})
 
-// GLOBAL CONNECTION TO REDIS SERVER
-export const redisClient = new Redis(ENV.REDIS_URL)
+redisClient.on("Connet", ()=>{
+  console.log("Redis connected successfully")
+})
 
-redisClient.on("Connect" , ()=> console.log("Redis connected successfully"))
+redisClient.on("Error", (error)=>{
+  console.log("Redis connection error", error.message)
+})
 
-redisClient.on("error", (error)=> console.log(" Redis error", error))
+export  default redisClient
